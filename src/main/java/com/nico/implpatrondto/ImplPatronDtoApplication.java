@@ -9,6 +9,7 @@ import com.nico.implpatrondto.enums.TipoDeOperacion;
 import com.nico.implpatrondto.repositories.ClienteRepository;
 import com.nico.implpatrondto.repositories.CuentaBancariaRepository;
 import com.nico.implpatrondto.repositories.OperacionCuentaRepository;
+import com.nico.implpatrondto.services.BancoService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,6 +27,13 @@ public class ImplPatronDtoApplication {
     }
 
     @Bean
+    CommandLineRunner commandLineRunner(BancoService bancoService){
+        return args -> {
+            bancoService.consultar();
+        };
+    }
+
+    //@Bean
     CommandLineRunner start(ClienteRepository clienteRepository, CuentaBancariaRepository cuentaBancariaRepository, OperacionCuentaRepository operacionCuentaRepository){
         return args -> {
             Stream.of("Pepe", "Juan", "Pedro", "Marcos").forEach(nombre ->{
