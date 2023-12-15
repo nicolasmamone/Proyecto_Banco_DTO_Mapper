@@ -28,9 +28,7 @@ public class ImplPatronDtoApplication {
 
     @Bean
     CommandLineRunner commandLineRunner(BancoService bancoService){
-        return args -> {
-            bancoService.consultar();
-        };
+        return args -> bancoService.consultar();
     }
 
     //@Bean
