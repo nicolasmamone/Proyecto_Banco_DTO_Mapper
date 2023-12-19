@@ -79,7 +79,7 @@ public class ImplPatronDtoApplication {
         };
     }
 
-    @Bean
+    //@Bean
     CommandLineRunner start2(CuentaBancariaService cuentaBancariaService){
         return args -> {
             Stream.of("Pepe", "Juan", "Pedro", "Marcos").forEach(nombre ->{
