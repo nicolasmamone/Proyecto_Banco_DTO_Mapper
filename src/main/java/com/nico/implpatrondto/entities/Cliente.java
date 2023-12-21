@@ -23,6 +23,6 @@ public class Cliente {
 
     //Un cliente tiene muchas cuentas bancarias
     @OneToMany(mappedBy = "cliente")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // QUE ELE ACCESO SOLO VA A SER PARA ESCRITURA
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // QUE EL ACCESO SOLO VA A SER PARA ESCRITURA
     private List<CuentaBancaria> cuentaBancaria;
 }

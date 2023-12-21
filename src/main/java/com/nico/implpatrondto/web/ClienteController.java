@@ -1,5 +1,6 @@
 package com.nico.implpatrondto.web;
 
+import com.nico.implpatrondto.dtos.ClienteDTO;
 import com.nico.implpatrondto.entities.Cliente;
 import com.nico.implpatrondto.services.CuentaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class ClienteController {
     private CuentaBancariaService cuentaBancariaService;
 
     @GetMapping("/clientes")
-    public List<Cliente> listarClientes(){
+    public List<ClienteDTO> listarClientes(){
         return cuentaBancariaService.listClientes();
     }
 }

@@ -1,10 +1,12 @@
 package com.nico.implpatrondto.services.impl;
 
+import com.nico.implpatrondto.dtos.ClienteDTO;
 import com.nico.implpatrondto.entities.*;
 import com.nico.implpatrondto.enums.TipoDeOperacion;
 import com.nico.implpatrondto.exceptions.BalanceInsuficienteException;
 import com.nico.implpatrondto.exceptions.ClienteNotFoundException;
 import com.nico.implpatrondto.exceptions.CuentaBancariaNotFoundException;
+import com.nico.implpatrondto.mappers.CuentaBancariaMappersImpl;
 import com.nico.implpatrondto.repositories.ClienteRepository;
 import com.nico.implpatrondto.repositories.CuentaBancariaRepository;
 import com.nico.implpatrondto.repositories.OperacionCuentaRepository;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -30,6 +33,9 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
 
     @Autowired
     private OperacionCuentaRepository operacionCuentaRepository;
+
+    @Autowired
+    private CuentaBancariaMappersImpl cuentaBancariaMappers;
 
     @Override
     public Cliente saveCliente(Cliente cliente) {
@@ -70,8 +76,12 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
     }
 
     @Override
-    public List<Cliente> listClientes() {
-        return clienteRepository.findAll();
+public List<ClienteDTO> listClientes() {
+        List<Cliente> clientes = clienteRepository.findAll();
+        List<ClienteDTO> clientesDTO = clientes.stream()
+                .map(cliente -> cuentaBancariaMappers.mapearDeCliente(cliente))
+                .collect(Collectors.toList());
+        return clientesDTO;
     }
 
     @Override
