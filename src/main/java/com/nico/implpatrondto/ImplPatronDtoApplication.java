@@ -1,5 +1,6 @@
 package com.nico.implpatrondto;
 
+import com.nico.implpatrondto.dtos.ClienteDTO;
 import com.nico.implpatrondto.entities.*;
 import com.nico.implpatrondto.enums.EstadoCuenta;
 import com.nico.implpatrondto.enums.TipoDeOperacion;
@@ -83,7 +84,7 @@ public class ImplPatronDtoApplication {
     CommandLineRunner start2(CuentaBancariaService cuentaBancariaService){
         return args -> {
             Stream.of("Pepe", "Juan", "Pedro", "Marcos").forEach(nombre ->{
-                Cliente cliente = new Cliente();
+                ClienteDTO cliente = new ClienteDTO();
                 cliente.setNombre(nombre);
                 cliente.setEmail(nombre+"@gmail.com");
                 cuentaBancariaService.saveCliente(cliente);

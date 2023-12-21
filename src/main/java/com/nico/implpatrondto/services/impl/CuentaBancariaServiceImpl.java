@@ -38,9 +38,31 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
     private CuentaBancariaMappersImpl cuentaBancariaMappers;
 
     @Override
-    public Cliente saveCliente(Cliente cliente) {
+    public ClienteDTO saveCliente(ClienteDTO clienteDTO) {
         log.info("Guardando un nuevo cliente");
-        return clienteRepository.save(cliente);
+        Cliente cliente = cuentaBancariaMappers.mapearDeClienteDTO(clienteDTO);
+        Cliente clienteBBDD = clienteRepository.save(cliente);
+        return cuentaBancariaMappers.mapearDeCliente(clienteBBDD);
+    }
+
+    @Override
+    public ClienteDTO getCliente(Long clienteId) throws ClienteNotFoundException {
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente No encontrado"));
+        return cuentaBancariaMappers.mapearDeCliente(cliente);
+    }
+
+    @Override
+    public ClienteDTO updateCliente(ClienteDTO clienteDTO) {
+        log.info("Actualizando Cliente");
+        Cliente cliente = cuentaBancariaMappers.mapearDeClienteDTO(clienteDTO);
+        Cliente clienteBBDD = clienteRepository.save(cliente);
+        return cuentaBancariaMappers.mapearDeCliente(clienteBBDD);
+    }
+
+    @Override
+    public void deleteCliente(Long clienteId) {
+        clienteRepository.deleteById(clienteId);
     }
 
     @Override
