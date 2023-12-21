@@ -1,6 +1,9 @@
 package com.nico.implpatrondto.services;
 
 import com.nico.implpatrondto.dtos.ClienteDTO;
+import com.nico.implpatrondto.dtos.CuentaActualDTO;
+import com.nico.implpatrondto.dtos.CuentaBancariaDTO;
+import com.nico.implpatrondto.dtos.CuentaDeAhorroDTO;
 import com.nico.implpatrondto.entities.Cliente;
 import com.nico.implpatrondto.entities.CuentaActual;
 import com.nico.implpatrondto.entities.CuentaBancaria;
@@ -20,13 +23,13 @@ public interface CuentaBancariaService {
     ClienteDTO updateCliente(ClienteDTO clienteDTO);
     void deleteCliente(Long clienteId); //throws ClienteNotFoundException;
 
-    CuentaActual saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException;
-    CuentaDeAhorro saveCuentaBancariaAhorro(double balanceInicial, double tasaDeInteres, Long clienteId) throws ClienteNotFoundException;
+    CuentaActualDTO saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException;
+    CuentaDeAhorroDTO saveCuentaBancariaAhorro(double balanceInicial, double tasaDeInteres, Long clienteId) throws ClienteNotFoundException;
     List<ClienteDTO> listClientes();
-    CuentaBancaria getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException;
+    CuentaBancariaDTO getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException;
     void debit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
     void credit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException;
     void transfer(String cuentaIdPropietario,String cuentaDestinatario, double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
-    List<CuentaBancaria> listCuentasBancarias();
+    List<CuentaBancariaDTO> listCuentasBancarias();
 }
 

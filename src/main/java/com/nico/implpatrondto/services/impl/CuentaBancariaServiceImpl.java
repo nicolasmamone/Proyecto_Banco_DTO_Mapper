@@ -1,6 +1,9 @@
 package com.nico.implpatrondto.services.impl;
 
 import com.nico.implpatrondto.dtos.ClienteDTO;
+import com.nico.implpatrondto.dtos.CuentaActualDTO;
+import com.nico.implpatrondto.dtos.CuentaBancariaDTO;
+import com.nico.implpatrondto.dtos.CuentaDeAhorroDTO;
 import com.nico.implpatrondto.entities.*;
 import com.nico.implpatrondto.enums.TipoDeOperacion;
 import com.nico.implpatrondto.exceptions.BalanceInsuficienteException;
@@ -66,7 +69,7 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
     }
 
     @Override
-    public CuentaActual saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException {
+    public CuentaActualDTO saveCuentaBancariaActual(double balanceInicial, double sobregiro, Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElse(null);
         if (cliente == null) throw new ClienteNotFoundException("Cliente No encontrado");
 
@@ -78,11 +81,11 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
         cuentaActual.setCliente(cliente);
 
         CuentaActual cuentaActualBBDD = cuentaBancariaRepository.save(cuentaActual);
-        return cuentaActualBBDD;
+        return cuentaBancariaMappers.mapearDeCuentaActual(cuentaActualBBDD);
     }
 
     @Override
-    public CuentaDeAhorro saveCuentaBancariaAhorro(double balanceInicial, double tasaDeInteres, Long clienteId) throws ClienteNotFoundException {
+    public CuentaDeAhorroDTO saveCuentaBancariaAhorro(double balanceInicial, double tasaDeInteres, Long clienteId) throws ClienteNotFoundException {
         Cliente cliente = clienteRepository.findById(clienteId).orElse(null);
         if (cliente == null) throw new ClienteNotFoundException("Cliente No encontrado");
 
@@ -94,7 +97,7 @@ public class CuentaBancariaServiceImpl implements CuentaBancariaService {
         cuentaDeAhorro.setCliente(cliente);
 
         CuentaDeAhorro cuentaDeAhorroBBDD = cuentaBancariaRepository.save(cuentaDeAhorro);
-        return cuentaDeAhorroBBDD;
+        return cuentaBancariaMappers.mapearDeCuentaDeAhorro(cuentaDeAhorroBBDD);
     }
 
     @Override
@@ -107,15 +110,24 @@ public List<ClienteDTO> listClientes() {
     }
 
     @Override
-    public CuentaBancaria getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException {
+    public CuentaBancariaDTO getCuentaBancaria(String cuentaId) throws CuentaBancariaNotFoundException {
         CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId)
                 .orElseThrow(() -> new CuentaBancariaNotFoundException("Cuenta Bancaria no encontrada"));
-        return cuentaBancaria;
+        if (cuentaBancaria instanceof CuentaDeAhorro){
+            CuentaDeAhorro cuentaDeAhorro = (CuentaDeAhorro) cuentaBancaria;
+            return cuentaBancariaMappers.mapearDeCuentaDeAhorro(cuentaDeAhorro);
+        }else{
+            CuentaActual cuentaActual = (CuentaActual) cuentaBancaria;
+            return cuentaBancariaMappers.mapearDeCuentaActual(cuentaActual);
+        }
+
     }
 
     @Override
     public void debit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException, BalanceInsuficienteException {
-        CuentaBancaria cuentaBancaria = getCuentaBancaria(cuentaId);
+        CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId)
+                .orElseThrow(() -> new CuentaBancariaNotFoundException("Cuenta Bancaria no encontrada"));
+
         if(cuentaBancaria.getBalance() < monto){ // Si se requiere retirar mayor monto que el que hay, se lanza un exception
             throw new BalanceInsuficienteException("Balance Insuficiente");
         }
@@ -135,7 +147,9 @@ public List<ClienteDTO> listClientes() {
 
     @Override
     public void credit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException {
-        CuentaBancaria cuentaBancaria = getCuentaBancaria(cuentaId);
+        CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId)
+                .orElseThrow(() -> new CuentaBancariaNotFoundException("Cuenta Bancaria no encontrada"));
+
 
         OperacionCuenta operacionCuenta = new OperacionCuenta();
         operacionCuenta.setTipoDeOperacion(TipoDeOperacion.CREDITO);
@@ -156,7 +170,18 @@ public List<ClienteDTO> listClientes() {
     }
 
     @Override
-    public List<CuentaBancaria> listCuentasBancarias() {
-        return cuentaBancariaRepository.findAll();
+    public List<CuentaBancariaDTO> listCuentasBancarias() {
+        List<CuentaBancaria> cuentaBancariaList = cuentaBancariaRepository.findAll();
+        List<CuentaBancariaDTO> cuentaBancariaDTOs = cuentaBancariaList.stream()
+                .map(cuentaBancaria -> {
+                    if (cuentaBancaria instanceof CuentaDeAhorro){
+                        CuentaDeAhorro cuentaDeAhorro = (CuentaDeAhorro) cuentaBancaria;
+                        return cuentaBancariaMappers.mapearDeCuentaDeAhorro(cuentaDeAhorro);
+                    }else{
+                        CuentaActual cuentaActual = (CuentaActual) cuentaBancaria;
+                        return cuentaBancariaMappers.mapearDeCuentaActual(cuentaActual);
+                    }
+                }).collect(Collectors.toList());
+        return cuentaBancariaDTOs;
     }
 }
