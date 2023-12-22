@@ -3,9 +3,11 @@ package com.nico.implpatrondto.mappers;
 import com.nico.implpatrondto.dtos.ClienteDTO;
 import com.nico.implpatrondto.dtos.CuentaActualDTO;
 import com.nico.implpatrondto.dtos.CuentaDeAhorroDTO;
+import com.nico.implpatrondto.dtos.OperacionCuentaDTO;
 import com.nico.implpatrondto.entities.Cliente;
 import com.nico.implpatrondto.entities.CuentaActual;
 import com.nico.implpatrondto.entities.CuentaDeAhorro;
+import com.nico.implpatrondto.entities.OperacionCuenta;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +49,11 @@ public class CuentaBancariaMappersImpl {
         BeanUtils.copyProperties(cuentaActualDTO, cuentaActual);
         cuentaActual.setCliente(mapearDeClienteDTO(cuentaActualDTO.getClienteDTO()));
         return cuentaActual;
+    }
+
+    public OperacionCuentaDTO mapearDeOperacionCuenta(OperacionCuenta operacionCuenta){
+        OperacionCuentaDTO operacionCuentaDTO = new OperacionCuentaDTO();
+        BeanUtils.copyProperties(operacionCuenta, operacionCuentaDTO);
+        return operacionCuentaDTO;
     }
 }

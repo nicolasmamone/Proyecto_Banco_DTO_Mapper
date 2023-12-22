@@ -1,9 +1,6 @@
 package com.nico.implpatrondto.services;
 
-import com.nico.implpatrondto.dtos.ClienteDTO;
-import com.nico.implpatrondto.dtos.CuentaActualDTO;
-import com.nico.implpatrondto.dtos.CuentaBancariaDTO;
-import com.nico.implpatrondto.dtos.CuentaDeAhorroDTO;
+import com.nico.implpatrondto.dtos.*;
 import com.nico.implpatrondto.entities.Cliente;
 import com.nico.implpatrondto.entities.CuentaActual;
 import com.nico.implpatrondto.entities.CuentaBancaria;
@@ -31,5 +28,6 @@ public interface CuentaBancariaService {
     void credit(String cuentaId, double monto, String descripcion) throws CuentaBancariaNotFoundException;
     void transfer(String cuentaIdPropietario,String cuentaDestinatario, double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
     List<CuentaBancariaDTO> listCuentasBancarias();
+    List<OperacionCuentaDTO> listarHistorialDeCuenta(String cuentaId);
 }
 

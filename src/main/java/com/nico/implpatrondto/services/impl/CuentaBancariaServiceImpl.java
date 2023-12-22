@@ -1,9 +1,6 @@
 package com.nico.implpatrondto.services.impl;
 
-import com.nico.implpatrondto.dtos.ClienteDTO;
-import com.nico.implpatrondto.dtos.CuentaActualDTO;
-import com.nico.implpatrondto.dtos.CuentaBancariaDTO;
-import com.nico.implpatrondto.dtos.CuentaDeAhorroDTO;
+import com.nico.implpatrondto.dtos.*;
 import com.nico.implpatrondto.entities.*;
 import com.nico.implpatrondto.enums.TipoDeOperacion;
 import com.nico.implpatrondto.exceptions.BalanceInsuficienteException;
@@ -183,5 +180,12 @@ public List<ClienteDTO> listClientes() {
                     }
                 }).collect(Collectors.toList());
         return cuentaBancariaDTOs;
+    }
+    @Override
+    public List<OperacionCuentaDTO> listarHistorialDeCuenta(String cuentaId) {
+        List<OperacionCuenta> operacionesDeCuenta = operacionCuentaRepository.findByCuentaBancariaId(cuentaId);
+        return operacionesDeCuenta.stream()
+                .map(operacionCuenta -> cuentaBancariaMappers.mapearDeOperacionCuenta(operacionCuenta))
+                .collect(Collectors.toList());
     }
 }
