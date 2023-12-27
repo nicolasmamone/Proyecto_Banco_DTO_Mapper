@@ -1,15 +1,13 @@
 package com.nico.implpatrondto.web;
 
 import com.nico.implpatrondto.dtos.CuentaBancariaDTO;
+import com.nico.implpatrondto.dtos.HistorialCuentaDTO;
 import com.nico.implpatrondto.dtos.OperacionCuentaDTO;
 import com.nico.implpatrondto.exceptions.CuentaBancariaNotFoundException;
 import com.nico.implpatrondto.services.CuentaBancariaService;
 import lombok.Lombok;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +29,10 @@ public class CuentaBancariaController {
     @GetMapping("/cuentas/{cuentaId}/operaciones")
     public List<OperacionCuentaDTO> listarHistorialDeCuenta(@PathVariable String cuentaId){
         return cuentaBancariaService.listarHistorialDeCuenta(cuentaId);
+    }
+    @GetMapping("/cuentas/{cuentaId}/pageOperaciones")
+    public HistorialCuentaDTO listHistorialDeLaCuentaPaginado(@PathVariable String cuentaId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name =  "size", defaultValue = "5")int size) throws CuentaBancariaNotFoundException {
+        return cuentaBancariaService.getHistorialCuenta(cuentaId, page, size);
     }
 
 }

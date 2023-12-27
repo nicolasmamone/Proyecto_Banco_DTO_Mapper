@@ -29,5 +29,6 @@ public interface CuentaBancariaService {
     void transfer(String cuentaIdPropietario,String cuentaDestinatario, double monto) throws CuentaBancariaNotFoundException, BalanceInsuficienteException;
     List<CuentaBancariaDTO> listCuentasBancarias();
     List<OperacionCuentaDTO> listarHistorialDeCuenta(String cuentaId);
+    HistorialCuentaDTO getHistorialCuenta(String cuentaId, int page, int size) throws CuentaBancariaNotFoundException;
 }
 
