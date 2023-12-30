@@ -208,7 +208,16 @@ public List<ClienteDTO> listClientes() {
         historialCuentaDTO.setPageSize(size);
         historialCuentaDTO.setTotalPage(operacionesCuenta.getTotalPages());
         return historialCuentaDTO;
-
-
     }
+
+    @Override
+    public List<ClienteDTO> searchClientes(String keyword) {
+        List<Cliente> clientes = clienteRepository.searchClientes(keyword);
+        List<ClienteDTO> clientesDTO = clientes.stream()
+                .map(cliente -> cuentaBancariaMappers.mapearDeCliente(cliente))
+                .collect(Collectors.toList());
+        return clientesDTO;
+    }
+
+
 }
