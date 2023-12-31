@@ -1,8 +1,7 @@
 package com.nico.implpatrondto.web;
 
-import com.nico.implpatrondto.dtos.CuentaBancariaDTO;
-import com.nico.implpatrondto.dtos.HistorialCuentaDTO;
-import com.nico.implpatrondto.dtos.OperacionCuentaDTO;
+import com.nico.implpatrondto.dtos.*;
+import com.nico.implpatrondto.exceptions.BalanceInsuficienteException;
 import com.nico.implpatrondto.exceptions.CuentaBancariaNotFoundException;
 import com.nico.implpatrondto.services.CuentaBancariaService;
 import lombok.Lombok;
@@ -33,6 +32,26 @@ public class CuentaBancariaController {
     @GetMapping("/cuentas/{cuentaId}/pageOperaciones")
     public HistorialCuentaDTO listHistorialDeLaCuentaPaginado(@PathVariable String cuentaId, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name =  "size", defaultValue = "5")int size) throws CuentaBancariaNotFoundException {
         return cuentaBancariaService.getHistorialCuenta(cuentaId, page, size);
+    }
+
+    //Para realizar un debito
+    @PostMapping("/cuentas/debito")
+    public DebitoDTO realizarDebito(@RequestBody DebitoDTO debitoDTO) throws CuentaBancariaNotFoundException, BalanceInsuficienteException {
+        cuentaBancariaService.debit(debitoDTO.getCuentaId(), debitoDTO.getMonto(), debitoDTO.getDescripcion());
+        return  debitoDTO;
+    }
+
+    //Para realizar un credito
+    @PostMapping("/cuentas/credito")
+    public CreditoDTO realizarCredito(@RequestBody CreditoDTO creditoDTO) throws CuentaBancariaNotFoundException {
+        cuentaBancariaService.credit(creditoDTO.getCuentaId(), creditoDTO.getMonto(), creditoDTO.getDescripcion());
+        return  creditoDTO;
+    }
+
+    //Para hacer una transferencia
+    @PostMapping("/cuentas/transferencias")
+    public void realizarTransferencia(@RequestBody TransferenciaRequestDTO transferenciaRequestDTO) throws CuentaBancariaNotFoundException, BalanceInsuficienteException {
+        cuentaBancariaService.transfer(transferenciaRequestDTO.getCuentaPropietario(), transferenciaRequestDTO.getCuentaDestinatario(), transferenciaRequestDTO.getMonto());
     }
 
 }
