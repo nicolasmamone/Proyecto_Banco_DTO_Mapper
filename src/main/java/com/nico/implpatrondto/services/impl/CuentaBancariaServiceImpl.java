@@ -196,7 +196,7 @@ public List<ClienteDTO> listClientes() {
         CuentaBancaria cuentaBancaria = cuentaBancariaRepository.findById(cuentaId).orElse(null);
         if (cuentaBancaria == null){throw new CuentaBancariaNotFoundException("Cuenta No Encontrada");}
 
-        Page<OperacionCuenta> operacionesCuenta = operacionCuentaRepository.findByCuentaBancariaId(cuentaId, PageRequest.of(page, size));
+        Page<OperacionCuenta> operacionesCuenta = operacionCuentaRepository.findByCuentaBancariaIdOrderByFechaOperacionDesc(cuentaId, PageRequest.of(page, size));
         HistorialCuentaDTO historialCuentaDTO = new HistorialCuentaDTO();
         List<OperacionCuentaDTO> operacionesCuentaDTO = operacionesCuenta.getContent().stream()
                 .map(operacionCuenta -> cuentaBancariaMappers.mapearDeOperacionCuenta(operacionCuenta))
